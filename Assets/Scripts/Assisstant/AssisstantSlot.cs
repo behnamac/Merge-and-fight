@@ -3,28 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using Controller;
 
-public class AssisstantSlot : MonoBehaviour
+namespace Assisstant
 {
-    public AssisstantDrag Assisstant { get; set; }
-    public void Drop(AssisstantDrag assisstant)
+    public class AssisstantSlot : MonoBehaviour
     {
-        if (!Assisstant)
+        public AssisstantDrag Assisstant { get; set; }
+        public void Drop(AssisstantDrag assisstant)
         {
-            Assisstant = assisstant;
-            Assisstant.transform.position = transform.position;
-            Assisstant.Slot = this;
-        }
-        else 
-        {
-            if (Assisstant.Index == assisstant.Index)
+            if (!Assisstant)
             {
-                if (Assisstant.Index + 1 < AssisstantController.Instance.assisstantPrefabs.Length)
-                    AssisstantController.Instance.Merge(Assisstant, assisstant, this);
+                Assisstant = assisstant;
+                Assisstant.transform.position = transform.position;
+                Assisstant.Slot = this;
+            }
+            else
+            {
+                if (Assisstant.Index == assisstant.Index && Assisstant.Type == assisstant.Type)
+                {
+                    if (assisstant.Type == AssisstantType.Near)
+                    {
+                        if (Assisstant.Index + 1 < AssisstantController.Instance.assisstantNearPrefabs.Length)
+                            AssisstantController.Instance.MergeNear(Assisstant, assisstant, this);
+                        else
+                            assisstant.Relese();
+                    }
+                    else 
+                    {
+                        if (Assisstant.Index + 1 < AssisstantController.Instance.assisstantFarPrefabs.Length)
+                            AssisstantController.Instance.MergeFar(Assisstant, assisstant, this);
+                        else
+                            assisstant.Relese();
+                    }
+                }
                 else
                     assisstant.Relese();
             }
-            else
-                assisstant.Relese();
         }
     }
 }
